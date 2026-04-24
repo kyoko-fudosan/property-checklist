@@ -1,0 +1,1492 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>物件調査チェックシート</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1c1c2e;--ink2:#4a4a6a;--warm:#f2ede4;--border:#d8d3c8;
+  --accent:#c17f3a;--accent-l:#f0e0c8;--accent-pale:#fdf8f0;
+  --green:#2a7a50;--green-pale:#e8f4ee;
+  --blue:#2563a8;--blue-pale:#e8f0fb;
+  --purple:#6d3fa0;--purple-pale:#f0eaf8;--purple-l:#ddd0f0;
+  --shadow:rgba(28,28,46,.09);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Sans JP',sans-serif;background:#dedad3;color:var(--ink);min-height:100vh;}
+
+/* ── SCREEN ── */
+@media screen{
+  .wrap{max-width:940px;margin:0 auto;padding:20px 14px 100px;}
+
+  /* Header */
+  .hd{background:var(--ink);color:#fff;padding:18px 26px 0;border-radius:12px 12px 0 0;}
+  .hd-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;}
+  .hd-sub{font-size:10px;color:rgba(255,255,255,.45);letter-spacing:.12em;margin-bottom:3px;}
+  .hd h1{font-family:'Noto Serif JP',serif;font-size:19px;font-weight:700;}
+  .hd-date{font-size:11px;color:rgba(255,255,255,.45);}
+
+  /* Save bar */
+  .save-bar{background:rgba(255,255,255,.07);border-radius:8px;padding:10px 14px;
+            margin-bottom:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .save-label{font-size:10px;color:rgba(255,255,255,.5);letter-spacing:.08em;margin-right:2px;}
+  .save-name-input{flex:1;min-width:140px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);
+                   border-radius:5px;padding:5px 9px;font-family:'Noto Sans JP',sans-serif;
+                   font-size:12px;color:#fff;outline:none;}
+  .save-name-input::placeholder{color:rgba(255,255,255,.35);}
+  .save-name-input:focus{border-color:var(--accent);}
+  .sb{padding:5px 12px;border:none;border-radius:5px;font-family:'Noto Sans JP',sans-serif;
+      font-size:11px;font-weight:700;cursor:pointer;transition:all .2s;letter-spacing:.03em;}
+  .sb-save{background:var(--accent);color:#fff;}
+  .sb-save:hover{background:#a86a2a;}
+  .sb-load{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.25);}
+  .sb-load:hover{background:rgba(255,255,255,.25);}
+  .sb-new{background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.15);}
+  .sb-new:hover{background:rgba(255,255,255,.2);}
+
+  /* Tabs */
+  .tabs{display:flex;gap:2px;}
+  .tab{flex:1;padding:9px 4px;text-align:center;font-size:12px;font-weight:700;
+       letter-spacing:.03em;cursor:pointer;border-radius:8px 8px 0 0;
+       background:rgba(255,255,255,.1);color:rgba(255,255,255,.5);
+       transition:all .2s;border:none;font-family:'Noto Sans JP',sans-serif;}
+  .tab.active-sales{background:#fff;color:var(--accent);}
+  .tab.active-legal{background:#fff;color:var(--blue);}
+  .tab.active-seller{background:#fff;color:var(--purple);}
+
+  /* Progress */
+  .prog-wrap{background:var(--ink);padding:8px 26px 14px;}
+  .prog-info{display:flex;justify-content:space-between;align-items:center;
+             color:rgba(255,255,255,.6);font-size:11px;margin-bottom:5px;}
+  .prog-num{font-size:18px;font-weight:700;color:var(--accent);}
+  .prog-num.legal{color:#60a5fa;}
+  .prog-num.seller{color:#c084fc;}
+  .prog-bar{height:3px;background:rgba(255,255,255,.12);}
+  .prog-fill{height:100%;transition:width .35s ease;}
+  .prog-fill.sales{background:linear-gradient(90deg,var(--accent),#e8a84a);}
+  .prog-fill.legal{background:linear-gradient(90deg,var(--blue),#60a5fa);}
+  .prog-fill.seller{background:linear-gradient(90deg,var(--purple),#c084fc);}
+
+  /* Card */
+  .card{background:#fff;border-radius:0 0 12px 12px;box-shadow:0 4px 24px var(--shadow);overflow:hidden;}
+
+  /* Property info fixed */
+  .prop-info-fixed {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    box-shadow: 0 2px 8px var(--shadow);
+  }
+  .prop-info {
+    background: var(--warm);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 26px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+  }
+  .pf{display:flex;flex-direction:column;gap:3px;}
+  .pf.w2{grid-column:span 2;}
+  .pl{font-size:10px;color:var(--ink2);letter-spacing:.08em;font-weight:500;}
+  .pi{border:1px solid var(--border);background:#fff;border-radius:6px;
+      padding:5px 9px;font-family:'Noto Sans JP',sans-serif;font-size:13px;color:var(--ink);width:100%;}
+  .pi:focus{outline:none;border-color:var(--accent);}
+
+  /* Panels */
+  .panel{display:none;}
+  .panel.active{display:block;}
+
+  /* Sections */
+  .sec{border-bottom:1px solid var(--border);}
+  .sec:last-child{border-bottom:none;}
+  .sec-hd{display:flex;align-items:center;gap:10px;padding:11px 26px;
+          background:var(--warm);cursor:pointer;user-select:none;transition:background .2s;}
+  .sec-hd:hover{background:var(--accent-l);}
+  .sec-hd.legal-hd:hover{background:var(--blue-pale);}
+  .sec-hd.seller-hd:hover{background:var(--purple-l);}
+  .sec-icon{width:25px;height:25px;border-radius:6px;display:flex;align-items:center;
+            justify-content:center;font-size:13px;flex-shrink:0;}
+  .sec-icon.sales{background:var(--accent);}
+  .sec-icon.legal{background:var(--blue);}
+  .sec-icon.seller{background:var(--purple);}
+  .sec-title{font-family:'Noto Serif JP',serif;font-size:13px;font-weight:700;flex:1;}
+  .sec-prog{font-size:11px;color:var(--ink2);}
+  .sec-tog{font-size:9px;color:var(--ink2);transition:transform .2s;}
+  .sec-tog.open{transform:rotate(180deg);}
+  .sec-body{padding:7px 26px 13px;}
+  .sec-body.collapsed{display:none;}
+
+  /* Check items */
+  .ci{display:flex;align-items:flex-start;gap:11px;padding:7px 10px;
+      border-radius:7px;margin-bottom:3px;cursor:pointer;transition:background .15s;}
+  .ci:hover{background:var(--accent-pale);}
+  .ci.checked{background:var(--green-pale);}
+  .ci.legal:hover{background:var(--blue-pale);}
+  .ci.legal.checked{background:var(--blue-pale);}
+  .ci.seller-item:hover{background:var(--purple-pale);}
+  .ci.seller-item.checked{background:var(--purple-pale);}
+  .cbox{width:19px;height:19px;border:2px solid var(--border);border-radius:4px;
+        flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;
+        transition:all .2s;background:#fff;font-size:12px;}
+  .ci.checked .cbox{background:var(--green);border-color:var(--green);color:#fff;}
+  .ci.legal.checked .cbox{background:var(--blue);border-color:var(--blue);color:#fff;}
+  .ci.seller-item.checked .cbox{background:var(--purple);border-color:var(--purple);color:#fff;}
+  .ct{flex:1;}
+  .clabel{font-size:13px;font-weight:500;line-height:1.5;}
+  .ci.checked .clabel{color:var(--green);}
+  .ci.legal.checked .clabel{color:var(--blue);}
+  .ci.seller-item.checked .clabel{color:var(--purple);}
+  .cnote{font-size:11px;color:var(--ink2);margin-top:1px;}
+
+  /* Seller question style */
+  .seller-q{font-size:13px;font-weight:700;line-height:1.6;color:var(--ink);}
+  .seller-sub{font-size:11px;color:var(--ink2);margin-top:2px;font-style:italic;}
+
+  /* Inputs */
+  .field-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:7px;}
+  .field-item{display:flex;flex-direction:column;gap:3px;flex:1;min-width:120px;}
+  .field-label{font-size:10px;color:var(--ink2);letter-spacing:.06em;}
+  .field-input{border:1px solid var(--border);border-radius:5px;padding:5px 8px;
+               font-family:'Noto Sans JP',sans-serif;font-size:12px;color:var(--ink);background:#fff;width:100%;}
+  .field-input:focus{outline:none;border-color:var(--accent);}
+  .field-select{border:1px solid var(--border);border-radius:5px;padding:5px 8px;
+                font-family:'Noto Sans JP',sans-serif;font-size:12px;color:var(--ink);background:#fff;width:100%;}
+  .memo-input{width:100%;border:1px solid var(--border);border-radius:5px;padding:5px 8px;
+              font-family:'Noto Sans JP',sans-serif;font-size:12px;color:var(--ink);
+              background:#fff;resize:vertical;min-height:30px;margin-top:6px;}
+  .memo-input:focus{outline:none;border-color:var(--accent);}
+
+  /* Shared owners */
+  .shared-section{background:var(--accent-pale);border:1px dashed var(--accent);
+                  border-radius:8px;padding:10px;margin-top:7px;}
+  .shared-title{font-size:11px;font-weight:700;color:var(--accent);margin-bottom:7px;}
+  .shared-row{display:flex;gap:8px;margin-bottom:5px;align-items:center;}
+  .shared-idx{font-size:11px;color:var(--ink2);width:16px;flex-shrink:0;}
+  .add-owner-btn{background:none;border:1px dashed var(--accent);border-radius:5px;
+                 color:var(--accent);font-size:11px;padding:4px 10px;cursor:pointer;
+                 font-family:'Noto Sans JP',sans-serif;margin-top:5px;}
+  .add-owner-btn:hover{background:var(--accent-l);}
+
+  /* Seller answer highlight */
+  .ans-yes{background:#fef3c7;border-left:3px solid #f59e0b;padding:5px 8px;border-radius:0 4px 4px 0;margin-top:6px;font-size:12px;font-weight:700;color:#92400e;}
+  .ans-no{background:#f0fdf4;border-left:3px solid #22c55e;padding:5px 8px;border-radius:0 4px 4px 0;margin-top:6px;font-size:12px;color:#15803d;}
+
+  /* Action bar */
+  .action-bar{display:flex;gap:8px;padding:16px 26px;background:var(--warm);
+              border-top:1px solid var(--border);border-radius:0 0 12px 12px;flex-wrap:wrap;}
+  .btn{padding:10px 14px;border:none;border-radius:8px;
+       font-family:'Noto Sans JP',sans-serif;font-size:12px;font-weight:700;
+       cursor:pointer;transition:all .2s;letter-spacing:.04em;}
+  .btn-reset{background:#fff;color:var(--ink2);border:1px solid var(--border);flex:1;}
+  .btn-reset:hover{background:var(--border);}
+  .btn-sales{background:var(--accent);color:#fff;flex:2;}
+  .btn-sales:hover{background:#a86a2a;}
+  .btn-legal{background:var(--blue);color:#fff;flex:2;}
+  .btn-legal:hover{background:#1a4f8a;}
+  .btn-seller{background:var(--purple);color:#fff;flex:2;}
+  .btn-seller:hover{background:#5a3080;}
+
+  /* Save modal */
+  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;
+                 align-items:center;justify-content:center;}
+  .modal-overlay.open{display:flex;}
+  .modal{background:#fff;border-radius:12px;padding:24px;width:360px;max-width:92vw;
+         box-shadow:0 8px 40px rgba(0,0,0,.2);}
+  .modal h3{font-family:'Noto Serif JP',serif;font-size:15px;margin-bottom:14px;}
+  .modal-list{max-height:240px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;margin-bottom:14px;}
+  .modal-item{display:flex;align-items:center;padding:10px 12px;border-bottom:1px solid var(--border);
+              cursor:pointer;transition:background .15s;gap:8px;}
+  .modal-item:last-child{border-bottom:none;}
+  .modal-item:hover{background:var(--warm);}
+  .modal-item-name{flex:1;font-size:13px;font-weight:500;}
+  .modal-item-date{font-size:10px;color:var(--ink2);}
+  .modal-item-del{background:none;border:none;color:#999;cursor:pointer;font-size:14px;padding:2px 6px;}
+  .modal-item-del:hover{color:#c0392b;}
+  .modal-empty{padding:20px;text-align:center;color:var(--ink2);font-size:12px;}
+  .modal-btns{display:flex;gap:8px;}
+  .modal-btn{flex:1;padding:9px;border:none;border-radius:7px;font-family:'Noto Sans JP',sans-serif;
+             font-size:12px;font-weight:700;cursor:pointer;}
+  .modal-btn-cancel{background:var(--warm);color:var(--ink2);}
+  .modal-btn-cancel:hover{background:var(--border);}
+}
+
+/* ── PRINT ── */
+@media print{
+  body{background:#fff;font-size:9.5pt;}
+  .no-print{display:none!important;}
+  .print-only{display:block!important;}
+  .hd{background:#1c1c2e!important;color:#fff!important;
+      -webkit-print-color-adjust:exact;print-color-adjust:exact;
+      padding:11px 18px;display:flex;justify-content:space-between;align-items:center;}
+  .hd h1{font-size:13pt;font-family:'Noto Serif JP',serif;}
+  .hd-sub{font-size:7.5pt;opacity:.6;}
+  .save-bar,.tabs,.prog-wrap,.action-bar,.modal-overlay{display:none!important;}
+  .card{box-shadow:none;border:1px solid #ccc;}
+  .prop-info-fixed{position:static;box-shadow:none;}
+  .prop-info{background:#f2ede4!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;
+             border-bottom:1.5pt solid #999;padding:9px 18px;
+             display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+  .pf.w2{grid-column:span 2;}
+  .pl{font-size:7.5pt;color:#666;}
+  .pi{display:none;}
+  .pv{font-size:10pt;font-weight:500;border-bottom:.5pt solid #999;padding-bottom:2px;min-height:15pt;}
+  .panel{display:none!important;}
+  .panel.print-active{display:block!important;}
+  .sec{page-break-inside:avoid;border-bottom:.5pt solid #ccc;}
+  .sec-hd{padding:5px 18px;display:flex;align-items:center;gap:8px;
+          -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .sec-hd.sales-hd{background:#1c1c2e!important;color:#fff!important;}
+  .sec-hd.legal-hd{background:#2563a8!important;color:#fff!important;}
+  .sec-hd.seller-hd{background:#6d3fa0!important;color:#fff!important;}
+  .sec-icon,.sec-tog{display:none;}
+  .sec-title{font-size:9pt;font-weight:700;}
+  .sec-prog{font-size:7.5pt;opacity:.7;}
+  .sec-body{padding:4px 18px 8px;display:block!important;}
+  .ci{display:flex;align-items:flex-start;gap:7px;padding:3px 5px;border-radius:3px;margin-bottom:2px;page-break-inside:avoid;}
+  .ci.checked{background:#e8f4ee!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .ci.legal.checked{background:#e8f0fb!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .ci.seller-item.checked{background:#f0eaf8!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .cbox{width:13px;height:13px;border:1.5pt solid #aaa;border-radius:3px;
+        flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;font-size:9pt;}
+  .ci.checked .cbox{background:#2a7a50!important;border-color:#2a7a50!important;color:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .ci.legal.checked .cbox{background:#2563a8!important;border-color:#2563a8!important;color:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .ci.seller-item.checked .cbox{background:#6d3fa0!important;border-color:#6d3fa0!important;color:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .clabel,.seller-q{font-size:9.5pt;}
+  .ci.checked .clabel{color:#2a7a50!important;}
+  .ci.legal.checked .clabel{color:#2563a8!important;}
+  .ci.seller-item.checked .seller-q{color:#6d3fa0!important;}
+  .cnote,.seller-sub{font-size:7.5pt;color:#666;}
+  .field-row{display:flex;flex-wrap:wrap;gap:5px;margin-top:3px;}
+  .field-item{display:flex;flex-direction:column;gap:2px;flex:1;min-width:90px;}
+  .field-label{font-size:7.5pt;color:#666;}
+  .field-input,.field-select,.memo-input,.add-owner-btn{display:none;}
+  .fv,.mv{font-size:9pt;border-bottom:.5pt solid #bbb;min-height:13pt;padding-bottom:1px;}
+  .mv{white-space:pre-wrap;color:#333;}
+  .shared-section{border:1pt dashed #c17f3a;border-radius:4px;padding:7px;margin-top:4px;}
+  .shared-title{font-size:7.5pt;font-weight:700;color:#c17f3a!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;margin-bottom:4px;}
+  .shared-row{display:flex;gap:5px;margin-bottom:3px;}
+  .shared-idx{font-size:9pt;color:#666;width:14px;}
+  .ans-yes{background:#fef3c7!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;border-left:2pt solid #f59e0b;padding:3px 6px;margin-top:4px;font-size:8.5pt;font-weight:700;color:#92400e!important;}
+  .ans-no{background:#f0fdf4!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;border-left:2pt solid #22c55e;padding:3px 6px;margin-top:4px;font-size:8.5pt;color:#15803d!important;}
+  .mansion-only{display:block!important;}
+  .print-footer{display:flex!important;justify-content:space-between;
+                padding:7px 18px;font-size:7.5pt;color:#888;border-top:.5pt solid #ccc;}
+}
+.print-only{display:none;}
+.print-footer{display:none;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- Header -->
+<div class="hd">
+  <div class="hd-top">
+    <div>
+      <div class="hd-sub">不動産売買営業</div>
+      <h1>物件調査チェックシート</h1>
+    </div>
+    <div class="hd-date no-print" id="dateDisp"></div>
+  </div>
+
+  <!-- Save bar -->
+  <div class="save-bar no-print">
+    <span class="save-label">💾 保存名：</span>
+    <input class="save-name-input" id="saveName" type="text" placeholder="物件名を入力して保存">
+    <button class="sb sb-save" onclick="saveData()">保存</button>
+    <button class="sb sb-load" onclick="openModal()">呼び出し</button>
+    <button class="sb sb-new" onclick="newSheet()">新規</button>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs no-print">
+    <button class="tab active-sales" id="tab-sales" onclick="switchTab('sales')">📋 営業調査</button>
+    <button class="tab" id="tab-legal" onclick="switchTab('legal')">🏛️ 法令・行政</button>
+    <button class="tab" id="tab-seller" onclick="switchTab('seller')">👥 売主様ヒアリング</button>
+  </div>
+</div>
+
+<!-- Progress -->
+<div class="prog-wrap no-print">
+  <div class="prog-info">
+    <span id="prog-label">営業調査の進捗</span>
+    <span><span class="prog-num" id="prog-count">0</span> / <span id="prog-total">0</span> 項目</span>
+  </div>
+  <div class="prog-bar"><div class="prog-fill sales" id="prog-fill" style="width:0%"></div></div>
+</div>
+
+<!-- Property Info (固定) -->
+<div class="prop-info-fixed">
+  <div class="prop-info">
+    <div class="pf w2">
+      <div class="pl">物件名称・所在地</div>
+      <input class="pi no-print" type="text" id="p_addr" placeholder="東京都○○区△△1-2-3">
+      <div class="pv print-only" id="p_addr_v"></div>
+    </div>
+    <div class="pf">
+      <div class="pl">預かり日</div>
+      <input class="pi no-print" type="date" id="p_date">
+      <div class="pv print-only" id="p_date_v"></div>
+    </div>
+    <div class="pf">
+      <div class="pl">担当者</div>
+      <input class="pi no-print" type="text" id="p_staff" placeholder="氏名">
+      <div class="pv print-only" id="p_staff_v"></div>
+    </div>
+    <div class="pf">
+      <div class="pl">売主名</div>
+      <input class="pi no-print" type="text" id="p_seller" placeholder="氏名・法人名">
+      <div class="pv print-only" id="p_seller_v"></div>
+    </div>
+    <div class="pf">
+      <div class="pl">種別</div>
+      <select class="pi no-print" id="p_type">
+        <option value="">選択</option>
+        <option>土地</option>
+        <option>戸建（土地+建物）</option>
+        <option>マンション</option>
+        <option>土地+建物（一棟）</option>
+        <option>事業用</option>
+      </select>
+      <div class="pv print-only" id="p_type_v"></div>
+    </div>
+    <div class="pf">
+      <div class="pl">売出価格</div>
+      <input class="pi no-print" type="text" id="p_price" placeholder="例：3,980万円">
+      <div class="pv print-only" id="p_price_v"></div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+
+  <!-- ═══ TAB: SALES ═══ -->
+  <div class="panel active" id="panel-sales">
+
+    <!-- 1. 登記・権利関係 -->
+    <div class="sec">
+      <div class="sec-hd sales-hd" onclick="toggleSec('s1')">
+        <div class="sec-icon sales">📋</div>
+        <div class="sec-title">登記・権利関係</div>
+        <div class="sec-prog" id="sp_s1"></div>
+        <div class="sec-tog open no-print" id="st_s1">▼</div>
+      </div>
+      <div class="sec-body" id="sb_s1">
+        <div class="ci" id="ci_s1_3" onclick="toggle('s1_3')"><div class="cbox" id="cb_s1_3"></div><div class="ct">
+          <div class="clabel">抵当権・根抵当権の確認</div>
+          <div class="field-row"><div class="field-item">
+            <div class="field-label">有無</div>
+            <select class="field-select no-print" id="f_s1_3_yn" onclick="event.stopPropagation()">
+              <option value="">選択</option><option>なし</option><option>あり</option>
+            </select>
+            <div class="fv print-only" id="fv_s1_3_yn"></div>
+          </div></div>
+        </div></div>
+        <div class="ci" id="ci_s1_5" onclick="toggle('s1_5')"><div class="cbox" id="cb_s1_5"></div><div class="ct">
+          <div class="clabel">地目の確認</div>
+          <div class="field-row">
+            <div class="field-item"><div class="field-label">地目</div>
+              <select class="field-select no-print" id="f_s1_5_chime" onclick="event.stopPropagation()">
+                <option value="">選択</option><option>宅地</option><option>農地（田）</option>
+                <option>農地（畑）</option><option>山林</option><option>雑種地</option><option>原野</option><option>その他</option>
+              </select>
+              <div class="fv print-only" id="fv_s1_5_chime"></div>
+            </div>
+            <div class="field-item"><div class="field-label">備考</div>
+              <input class="field-input no-print" id="f_s1_5_note" type="text" placeholder="農転必要など" onclick="event.stopPropagation()">
+              <div class="fv print-only" id="fv_s1_5_note"></div>
+            </div>
+          </div>
+        </div></div>
+        <div class="ci" id="ci_s1_6" onclick="toggle('s1_6')"><div class="cbox" id="cb_s1_6"></div><div class="ct">
+          <div class="clabel">共有持分の確認</div>
+          <div class="shared-section" onclick="event.stopPropagation()">
+            <div class="shared-title">共有持分（該当する場合）</div>
+            <div id="owners-list"></div>
+            <button class="add-owner-btn no-print" onclick="addOwner()">＋ 共有者を追加</button>
+          </div>
+        </div></div>
+      </div>
+    </div>
+
+    <!-- 2. 境界・越境 -->
+    <div class="sec">
+      <div class="sec-hd sales-hd" onclick="toggleSec('s2')">
+        <div class="sec-icon sales">📐</div>
+        <div class="sec-title">境界・越境</div>
+        <div class="sec-prog" id="sp_s2"></div>
+        <div class="sec-tog open no-print" id="st_s2">▼</div>
+      </div>
+      <div class="sec-body" id="sb_s2">
+        <div class="ci" id="ci_s2_1" onclick="toggle('s2_1')"><div class="cbox" id="cb_s2_1"></div><div class="ct">
+          <div class="clabel">境界票（杭・プレート）の確認</div>
+          <div class="field-row">
+            <div class="field-item"><div class="field-label">状況</div>
+              <select class="field-select no-print" id="f_s2_1_st" onclick="event.stopPropagation()">
+                <option value="">選択</option><option>全箇所あり</option><option>一部不明</option><option>なし</option>
+              </select>
+              <div class="fv print-only" id="fv_s2_1_st"></div>
+            </div>
+            <div class="field-item"><div class="field-label">備考</div>
+              <input class="field-input no-print" id="f_s2_1_note" type="text" placeholder="不明箇所など" onclick="event.stopPropagation()">
+              <div class="fv print-only" id="fv_s2_1_note"></div>
+            </div>
+          </div>
+        </div></div>
+        <div class="ci" id="ci_s2_2" onclick="toggle('s2_2')"><div class="cbox" id="cb_s2_2"></div><div class="ct">
+          <div class="clabel">確定測量図の有無 <span style="font-size:10px;background:#e8d5b7;color:#a86a2a;border-radius:3px;padding:1px 5px;font-weight:700;margin-left:4px;">任意</span></div>
+          <div class="field-row"><div class="field-item"><div class="field-label">有無</div>
+            <select class="field-select no-print" id="f_s2_2_yn" onclick="event.stopPropagation()">
+              <option value="">選択</option><option>あり</option><option>なし（現況測量のみ）</option><option>なし（測量自体なし）</option>
+            </select>
+            <div class="fv print-only" id="fv_s2_2_yn"></div>
+          </div></div>
+        </div></div>
+        <div class="ci" id="ci_s2_3" onclick="toggle('s2_3')"><div class="cbox" id="cb_s2_3"></div><div class="ct">
+          <div class="clabel">越境物の確認（ブロック・樹木・建物）</div>
+          <textarea class="memo-input no-print" id="m_s2_3" placeholder="例：北側ブロック塀が越境" onclick="event.stopPropagation()"></textarea>
+          <div class="mv print-only" id="mv_s2_3"></div>
+        </div></div>
+        <div class="ci" id="ci_s2_4" onclick="toggle('s2_4')"><div class="cbox" id="cb_s2_4"></div><div class="ct">
+          <div class="clabel">電線・電柱の越境確認</div>
+          <div class="field-row">
+            <div class="field-item"><div class="field-label">状況</div>
+              <select class="field-select no-print" id="f_s2_4_st" onclick="event.stopPropagation()">
+                <option value="">選択</option><option>なし</option><option>電線越境あり</option>
+                <option>電柱あり（敷地内）</option><option>電柱あり（道路）</option>
+              </select>
+              <div class="fv print-only" id="fv_s2_4_st"></div>
+            </div>
+            <div class="field-item"><div class="field-label">備考</div>
+              <input class="field-input no-print" id="f_s2_4_note" type="text" placeholder="移設交渉など" onclick="event.stopPropagation()">
+              <div class="fv print-only" id="fv_s2_4_note"></div>
+            </div>
+          </div>
+        </div></div>
+        <div class="ci" id="ci_s2_6" onclick="toggle('s2_6')"><div class="cbox" id="cb_s2_6"></div><div class="ct">
+          <div class="clabel">電線・配管等の敷地内利用（地役権・使用承諾）確認</div>
+          <div class="cnote">隣地や道路のための電線・ガス管・水道管が敷地内を通っていないか</div>
+          <div class="field-row">
+            <div class="field-item"><div class="field-label">状況</div>
+              <select class="field-select no-print" id="f_s2_6_st" onclick="event.stopPropagation()">
+                <option value="">選択</option><option>なし</option><option>電線通過あり</option><option>配管通過あり</option><option>複数あり</option>
+              </select>
+              <div class="fv print-only" id="fv_s2_6_st"></div>
+            </div>
+            <div class="field-item"><div class="field-label">地役権・承諾書</div>
+              <select class="field-select no-print" id="f_s2_6_doc" onclick="event.stopPropagation()">
+                <option value="">選択</option><option>地役権設定あり</option><option>使用承諾書あり</option><option>口頭のみ</option><option>不明</option>
+              </select>
+              <div class="fv print-only" id="fv_s2_6_doc"></div>
+            </div>
+            <div class="field-item"><div class="field-label">備考</div>
+              <input class="field-input no-print" id="f_s2_6_note" type="text" placeholder="詳細メモ" onclick="event.stopPropagation()">
+              <div class="fv print-only" id="fv_s2_6_note"></div>
+            </div>
+          </div>
+        </div></div>
+        <div class="ci" id="ci_s2_5" onclick="toggle('s2_5')"><div class="cbox" id="cb_s2_5"></div><div class="ct">
+          <div class="clabel">隣地との境界確認書の有無</div>
+          <div class="field-row"><div class="field-item"><div class="field-label">有無</div>
+            <select class="field-select no-print" id="f_s2_5_yn" onclick="event.stopPropagation()">
+              <option value="">選択</option><option>全隣地あり</option><option>一部あり</option><option>なし</option>
+            </select>
+            <div class="fv print-only" id="fv_s2_5_yn"></div>
+          </div></div>
+        </div></div>
+      </div>
+    </div>
+
+    <!-- 3. 設備・インフラ -->
+    <div class="sec">
+      <div class="sec-hd sales-hd" onclick="toggleSec('s3')">
+        <div class="sec-icon sales">🔧</div>
+        <div class="sec-title">設備・インフラ</div>
+        <div class="sec-prog" id="sp_s3"></div>
+        <div class="sec-tog open no-print" id="st_s3">▼</div>
+      </div>
+      <div class="sec-body" id="sb_s3">
+        <div class="ci" id="ci_s3_1" onclick="toggle('s3_1')"><div class="cbox" id="cb_s3_1"></div><div class="ct">
+          <div class="clabel">水道メーター口径・引き込み確認</div>
+          <div class="field-row">
+            <div class="field-item"><div class="field-label">メーター口径</div>
+              <select class="field-select no-print" id="f_s3_1_mm" onclick="event.stopPropagation()">
+                <option value="">選択</option><option>13mm</option><option>20mm</option><option>25mm</option><option>30mm以上</option><option>未確認</option>
+              </select>
+              <div class="fv print-only" id="fv_s3_1_mm"></div>
+            </div>
+            <div class="field-item"><div class="field-label">引き込み場所</div>
+              <select class="field-select no-print" id="f_s3_1_loc" onclick="event.stopPropagation()">
+                <option value="">選択</option><option>前面道路から直引き</option><option>隣地経由</option><option>私道経由</option><option>未引き込み</option>
+              </select>
+              <div class="fv print-only" id="fv_s3_1_loc"></div>
+            </div>
+            <div class="field-item"><div class="field-label">備考</div>
+              <input class="field-input no-print" id="f_s3_1_note" type="text" placeholder="引き直し要など" onclick="event.stopPropagation()">
+              <div class="fv print-only" id="fv_s3_1_note"></div>
+            </div>
+          </div>
+        </div></div>
+        <div class="ci" id="ci_s3_2" onclick="toggle('s3_2')"><div class="cbox" id="cb_s3_2"></div><div class="ct">
+          <div class="clabel">排水・下水の確認</div>
+          <div class="field-row">
+            <div class="field-item"><div class="field-label">排水種別</div>
+              <select class="field-select no-print" id="f_s3_2_type" onclick="event.stopPropagation()">
+                <option value="">選択</option><option>公共下水</option><option>浄化槽（合併）</option><option>浄化槽（単独）</option><option>汲み取り</option>
+              </select>
+              <div class="fv print-only" id="fv_s3_2_type"></div>
+            </div>
+            <div class="field-item"><div class="field-label">排水先</div>
+              <input class="field-input no-print" id="f_s3_2_dest" type="text" placeholder="例：前面道路側溝" onclick="event.stopPropagation()">
+              <div class="fv print-only" id="fv_s3_2_dest"></div>
+            </div>
+            <div class="field-item"><div class="field-label">備考</div>
+              <input class="field-input no-print" id="f_s3_2_note" type="text" placeholder="浄化槽法定検査など" onclick="event.stopPropagation()">
+              <div class="fv print-only" id="fv_s3_2_note"></div>
+            </div>
+          </div>
+        </div></div>
+        <div class="ci" id="ci_s3_3" onclick="toggle('s3_3')"><div class="cbox" id="cb_s3_3"></div><div class="ct">
+          <div class="clabel">ガス種別の確認</div>
+          <div class="field-row"><div class="field-item"><div class="field-label">種別</div>
+            <select class="field-select no-print" id="f_s3_3_type" onclick="event.stopPropagation()">
+              <option value="">選択</option><option>都市ガス</option><option>プロパン（LP）</option><option>オール電化</option><option>未引き込み</option>
+            </select>
+            <div class="fv print-only" id="fv_s3_3_type"></div>
+          </div></div>
+        </div></div>
+        <div class="ci" id="ci_s3_5" onclick="toggle('s3_5')"><div class="cbox" id="cb_s3_5"></div><div class="ct">
+          <div class="clabel">雨漏り・シロアリ・基礎クラック等の確認</div>
+          <textarea class="memo-input no-print" id="m_s3_5" placeholder="売主への告知内容を記録" onclick="event.stopPropagation()"></textarea>
+          <div class="mv print-only" id="mv_s3_5"></div>
+        </div></div>
+        <div class="ci" id="ci_s3_6" onclick="toggle('s3_6')"><div class="cbox" id="cb_s3_6"></div><div class="ct">
+          <div class="clabel">リフォーム・増改築履歴の確認</div>
+          <textarea class="memo-input no-print" id="m_s3_6" placeholder="内容・時期・確認申請の有無など" onclick="event.stopPropagation()"></textarea>
+          <div class="mv print-only" id="mv_s3_6"></div>
+        </div></div>
+      </div>
+    </div>
+
+    <!-- 4. 税務・費用 -->
+    <div class="sec">
+      <div class="sec-hd sales-hd" onclick="toggleSec('s4')">
+        <div class="sec-icon sales">💴</div>
+        <div class="sec-title">税務・費用</div>
+        <div class="sec-prog" id="sp_s4"></div>
+        <div class="sec-tog open no-print" id="st_s4">▼</div>
+      </div>
+      <div class="sec-body" id="sb_s4">
+        <div class="ci" id="ci_s4_1" onclick="toggle('s4_1')"><div class="cbox" id="cb_s4_1"></div><div class="ct">
+          <div class="clabel">固定資産税の確認</div>
+          <div class="field-row">
+            <div class="field-item"><div class="field-label">年額（概算）</div>
+              <input class="field-input no-print" id="f_s4_1_tax" type="text" placeholder="例：12万円" onclick="event.stopPropagation()">
+              <div class="fv print-only" id="fv_s4_1_tax"></div>
+            </div>
+          </div>
+        </div></div>
+        <div class="ci" id="ci_s4_2" onclick="toggle('s4_2')"><div class="cbox" id="cb_s4_2"></div><div class="ct">
+          <div class="clabel">ローン残債の確認</div>
+          <div class="field-row">
+            <div class="field-item"><div class="field-label">残債</div>
+              <select class="field-select no-print" id="f_s4_2_loan" onclick="event.stopPropagation()" onchange="toggleShow('s4_2_detail',this.value==='あり')">
+                <option value="">選択</option><option>なし</option><option>あり</option>
+              </select>
+              <div class="fv print-only" id="fv_s4_2_loan"></div>
+            </div>
+          </div>
+          <div id="s4_2_detail" style="display:none;">
+            <div class="field-row" style="margin-top:6px;">
+              <div class="field-item"><div class="field-label">残高概算</div>
+                <input class="field-input no-print" id="f_s4_2_amt" type="text" placeholder="例：2,000万円" onclick="event.stopPropagation()">
+                <div class="fv print-only" id="fv_s4_2_amt"></div>
+              </div>
+              <div class="field-item"><div class="field-label">金融機関</div>
+                <input class="field-input no-print" id="f_s4_2_bank" type="text" placeholder="例：○○銀行" onclick="event.stopPropagation()">
+                <div class="fv print-only" id="fv_s4_2_bank"></div>
+              </div>
+            </div>
+          </div>
+        </div></div>
+      </div>
+    </div>
+
+    <!-- 5. 道路・接道 -->
+    <div class="sec">
+      <div class="sec-hd sales-hd" onclick="toggleSec('s6')">
+        <div class="sec-icon sales">🛣️</div>
+        <div class="sec-title">道路・接道関係</div>
+        <div class="sec-prog" id="sp_s6"></div>
+        <div class="sec-tog open no-print" id="st_s6">▼</div>
+      </div>
+      <div class="sec-body" id="sb_s6">
+        <div class="ci" id="ci_s6_1" onclick="toggle('s6_1')"><div class="cbox" id="cb_s6_1"></div><div class="ct">
+          <div class="clabel">接道幅員・道路種別の確認</div>
+          <div class="field-row">
+            <div class="field-item"><div class="field-label">道路幅員</div>
+              <input class="field-input no-print" id="f_s6_1_w" type="text" placeholder="例：4.5m" onclick="event.stopPropagation()">
+              <div class="fv print-only" id="fv_s6_1_w"></div>
+            </div>
+            <div class="field-item"><div class="field-label">道路種別</div>
+              <select class="field-select no-print" id="f_s6_1_type" onclick="event.stopPropagation()">
+                <option value="">選択</option>
+                <option>42条1項1号（公道）</option><option>42条1項2号（開発道路）</option>
+                <option>42条1項3号（既存道路）</option><option>42条1項4号（計画道路）</option>
+                <option>42条1項5号（位置指定道路）</option><option>42条2項道路（みなし道路）</option>
+                <option>建基法外道路</option>
+              </select>
+              <div class="fv print-only" id="fv_s6_1_type"></div>
+            </div>
+          </div>
+        </div></div>
+        <div class="ci" id="ci_s6_2" onclick="toggle('s6_2')"><div class="cbox" id="cb_s6_2"></div><div class="ct">
+          <div class="clabel">セットバックの要否</div>
+          <div class="field-row">
+            <div class="field-item"><div class="field-label">要否</div>
+              <select class="field-select no-print" id="f_s6_2_sb" onclick="event.stopPropagation()">
+                <option value="">選択</option><option>不要</option><option>要・未施工</option><option>要・施工済み</option>
+              </select>
+              <div class="fv print-only" id="fv_s6_2_sb"></div>
+            </div>
+            <div class="field-item"><div class="field-label">概算面積</div>
+              <input class="field-input no-print" id="f_s6_2_area" type="text" placeholder="例：約2㎡" onclick="event.stopPropagation()">
+              <div class="fv print-only" id="fv_s6_2_area"></div>
+            </div>
+          </div>
+        </div></div>
+        <div class="ci" id="ci_s6_3" onclick="toggle('s6_3')"><div class="cbox" id="cb_s6_3"></div><div class="ct">
+          <div class="clabel">私道負担・位置指定道路の確認</div>
+          <div class="field-row">
+            <div class="field-item"><div class="field-label">私道負担</div>
+              <select class="field-select no-print" id="f_s6_3_yn" onclick="event.stopPropagation()" onchange="toggleShow('s6_3_detail',this.value.startsWith('あり'))">
+                <option value="">選択</option><option>なし</option><option>あり（持分あり）</option><option>あり（持分なし）</option>
+              </select>
+              <div class="fv print-only" id="fv_s6_3_yn"></div>
+            </div>
+          </div>
+          <div id="s6_3_detail" style="display:none;">
+            <div class="field-row" style="margin-top:6px;">
+              <div class="field-item"><div class="field-label">面積・備考</div>
+                <input class="field-input no-print" id="f_s6_3_note" type="text" placeholder="例：約10㎡・管理状況など" onclick="event.stopPropagation()">
+                <div class="fv print-only" id="fv_s6_3_note"></div>
+              </div>
+            </div>
+          </div>
+        </div></div>
+      </div>
+    </div>
+
+    <!-- マンション専用 -->
+    <div class="sec mansion-only" id="sec_mansion" style="display:none;">
+      <div class="sec-hd sales-hd" onclick="toggleSec('s7')">
+        <div class="sec-icon sales">🏢</div>
+        <div class="sec-title">マンション専用確認</div>
+        <div class="sec-prog" id="sp_s7"></div>
+        <div class="sec-tog open no-print" id="st_s7">▼</div>
+      </div>
+      <div class="sec-body" id="sb_s7">
+        <div class="ci" id="ci_s7_1" onclick="toggle('s7_1')"><div class="cbox" id="cb_s7_1"></div><div class="ct">
+          <div class="clabel">管理費・修繕積立金の月額確認</div>
+          <div class="field-row">
+            <div class="field-item"><div class="field-label">管理費（月額）</div>
+              <input class="field-input no-print" id="f_s7_1_mgmt" type="text" placeholder="例：15,000円" onclick="event.stopPropagation()">
+              <div class="fv print-only" id="fv_s7_1_mgmt"></div>
+            </div>
+            <div class="field-item"><div class="field-label">修繕積立金（月額）</div>
+              <input class="field-input no-print" id="f_s7_1_reserve" type="text" placeholder="例：12,000円" onclick="event.stopPropagation()">
+              <div class="fv print-only" id="fv_s7_1_reserve"></div>
+            </div>
+          </div>
+        </div></div>
+        <div class="ci" id="ci_s7_2" onclick="toggle('s7_2')"><div class="cbox" id="cb_s7_2"></div><div class="ct">
+          <div class="clabel">管理費・修繕積立金の滞納有無</div>
+          <div class="field-row">
+            <div class="field-item"><div class="field-label">滞納</div>
+              <select class="field-select no-print" id="f_s7_2_arr" onclick="event.stopPropagation()">
+                <option value="">選択</option><option>なし</option><option>あり</option><option>要確認</option>
+              </select>
+              <div class="fv print-only" id="fv_s7_2_arr"></div>
+            </div>
+            <div class="field-item"><div class="field-label">金額</div>
+              <input class="field-input no-print" id="f_s7_2_amt" type="text" placeholder="滞納がある場合" onclick="event.stopPropagation()">
+              <div class="fv print-only" id="fv_s7_2_amt"></div>
+            </div>
+          </div>
+        </div></div>
+        <div class="ci" id="ci_s7_3" onclick="toggle('s7_3')"><div class="cbox" id="cb_s7_3"></div><div class="ct">
+          <div class="clabel">管理形態・管理会社の確認</div>
+          <div class="field-row">
+            <div class="field-item"><div class="field-label">管理形態</div>
+              <select class="field-select no-print" id="f_s7_3_type" onclick="event.stopPropagation()">
+                <option value="">選択</option><option>全部委託</option><option>一部委託</option><option>自主管理</option>
+              </select>
+              <div class="fv print-only" id="fv_s7_3_type"></div>
+            </div>
+            <div class="field-item"><div class="field-label">管理会社名</div>
+              <input class="field-input no-print" id="f_s7_3_co" type="text" placeholder="会社名" onclick="event.stopPropagation()">
+              <div class="fv print-only" id="fv_s7_3_co"></div>
+            </div>
+          </div>
+        </div></div>
+      </div>
+    </div>
+
+    <!-- 6. 懸念事項 -->
+    <div class="sec">
+      <div class="sec-hd sales-hd" onclick="toggleSec('s5')">
+        <div class="sec-icon sales">⚠️</div>
+        <div class="sec-title">調査懸念事項・メモ</div>
+        <div class="sec-prog" id="sp_s5"></div>
+        <div class="sec-tog open no-print" id="st_s5">▼</div>
+      </div>
+      <div class="sec-body" id="sb_s5">
+        <div class="ci" id="ci_s5_1" onclick="toggle('s5_1')"><div class="cbox" id="cb_s5_1"></div><div class="ct">
+          <div class="clabel">土壌汚染リスクの確認</div>
+          <div class="cnote">元工場・ガソリンスタンド跡等</div>
+          <textarea class="memo-input no-print" id="m_s5_1" placeholder="経緯・対応メモ" onclick="event.stopPropagation()"></textarea>
+          <div class="mv print-only" id="mv_s5_1"></div>
+        </div></div>
+        <div class="ci" id="ci_s5_2" onclick="toggle('s5_2')"><div class="cbox" id="cb_s5_2"></div><div class="ct">
+          <div class="clabel">ハザードマップ確認（浸水・土砂・津波）</div>
+          <textarea class="memo-input no-print" id="m_s5_2" placeholder="区域種別・浸水深など" onclick="event.stopPropagation()"></textarea>
+          <div class="mv print-only" id="mv_s5_2"></div>
+        </div></div>
+        <div class="ci" id="ci_s5_5" onclick="toggle('s5_5')"><div class="cbox" id="cb_s5_5"></div><div class="ct">
+          <div class="clabel">これまでの浸水被害の有無確認</div>
+          <div class="field-row">
+            <div class="field-item"><div class="field-label">浸水被害</div>
+              <select class="field-select no-print" id="f_s5_5_fl" onclick="event.stopPropagation()">
+                <option value="">選択</option><option>なし（売主告知）</option><option>あり</option><option>不明</option>
+              </select>
+              <div class="fv print-only" id="fv_s5_5_fl"></div>
+            </div>
+            <div class="field-item"><div class="field-label">詳細</div>
+              <input class="field-input no-print" id="f_s5_5_note" type="text" placeholder="時期・深さ・箇所など" onclick="event.stopPropagation()">
+              <div class="fv print-only" id="fv_s5_5_note"></div>
+            </div>
+          </div>
+        </div></div>
+        <div class="ci" id="ci_s5_3" onclick="toggle('s5_3')"><div class="cbox" id="cb_s5_3"></div><div class="ct">
+          <div class="clabel">嫌悪施設・周辺環境の確認</div>
+          <textarea class="memo-input no-print" id="m_s5_3" placeholder="墓地・高圧線・工場・騒音など" onclick="event.stopPropagation()"></textarea>
+          <div class="mv print-only" id="mv_s5_3"></div>
+        </div></div>
+        <div class="ci" id="ci_s5_6" onclick="toggle('s5_6')"><div class="cbox" id="cb_s5_6"></div><div class="ct">
+          <div class="clabel">事件・事故・自然死・空き巣等の確認</div>
+          <div class="cnote">告知義務対象となる可能性のある事項</div>
+          <div class="field-row"><div class="field-item"><div class="field-label">該当</div>
+            <select class="field-select no-print" id="f_s5_6_yn" onclick="event.stopPropagation()">
+              <option value="">選択</option><option>なし（売主告知）</option><option>あり</option><option>不明・要確認</option>
+            </select>
+            <div class="fv print-only" id="fv_s5_6_yn"></div>
+          </div></div>
+          <textarea class="memo-input no-print" id="m_s5_6" placeholder="内容・時期・対応状況など" onclick="event.stopPropagation()"></textarea>
+          <div class="mv print-only" id="mv_s5_6"></div>
+        </div></div>
+        <div class="ci" id="ci_s5_4" onclick="toggle('s5_4')"><div class="cbox" id="cb_s5_4"></div><div class="ct">
+          <div class="clabel">その他特記事項・営業メモ</div>
+          <textarea class="memo-input no-print" id="m_s5_4" placeholder="売主の事情、急ぎ度、価格交渉余地など" onclick="event.stopPropagation()" style="min-height:55px;"></textarea>
+          <div class="mv print-only" id="mv_s5_4"></div>
+        </div></div>
+      </div>
+    </div>
+
+  </div><!-- /panel-sales -->
+
+  <!-- ═══ TAB: LEGAL ═══ -->
+  <div class="panel" id="panel-legal">
+    <div class="sec">
+      <div class="sec-hd legal-hd" onclick="toggleSec('l1')">
+        <div class="sec-icon legal">🏛️</div>
+        <div class="sec-title">用途地域・建築制限</div>
+        <div class="sec-prog" id="sp_l1"></div>
+        <div class="sec-tog open no-print" id="st_l1">▼</div>
+      </div>
+      <div class="sec-body" id="sb_l1">
+        <div class="ci legal" id="ci_l1_1" onclick="toggle('l1_1','legal')"><div class="cbox" id="cb_l1_1"></div><div class="ct">
+          <div class="clabel">用途地域の確認</div>
+          <div class="field-row"><div class="field-item"><div class="field-label">用途地域</div>
+            <select class="field-select no-print" id="f_l1_1_zone" onclick="event.stopPropagation()">
+              <option value="">選択</option>
+              <option>第一種低層住居専用地域</option><option>第二種低層住居専用地域</option>
+              <option>第一種中高層住居専用地域</option><option>第二種中高層住居専用地域</option>
+              <option>第一種住居地域</option><option>第二種住居地域</option><option>準住居地域</option>
+              <option>近隣商業地域</option><option>商業地域</option><option>準工業地域</option>
+              <option>工業地域</option><option>工業専用地域</option>
+              <option>市街化調整区域</option><option>非線引き区域</option>
+            </select>
+            <div class="fv print-only" id="fv_l1_1_zone"></div>
+          </div></div>
+        </div></div>
+        <div class="ci legal" id="ci_l1_2" onclick="toggle('l1_2','legal')"><div class="cbox" id="cb_l1_2"></div><div class="ct">
+          <div class="clabel">建蔽率・容積率の確認</div>
+          <div class="field-row">
+            <div class="field-item"><div class="field-label">建蔽率</div>
+              <input class="field-input no-print" id="f_l1_2_bc" type="text" placeholder="例：60%" onclick="event.stopPropagation()">
+              <div class="fv print-only" id="fv_l1_2_bc"></div>
+            </div>
+            <div class="field-item"><div class="field-label">容積率</div>
+              <input class="field-input no-print" id="f_l1_2_far" type="text" placeholder="例：200%" onclick="event.stopPropagation()">
+              <div class="fv print-only" id="fv_l1_2_far"></div>
+            </div>
+          </div>
+        </div></div>
+        <div class="ci legal" id="ci_l1_3" onclick="toggle('l1_3','legal')"><div class="cbox" id="cb_l1_3"></div><div class="ct">
+          <div class="clabel">防火・準防火地域の確認</div>
+          <div class="field-row"><div class="field-item"><div class="field-label">区分</div>
+            <select class="field-select no-print" id="f_l1_3_fire" onclick="event.stopPropagation()">
+              <option value="">選択</option><option>防火地域</option><option>準防火地域</option><option>指定なし</option>
+            </select>
+            <div class="fv print-only" id="fv_l1_3_fire"></div>
+          </div></div>
+        </div></div>
+        <div class="ci legal" id="ci_l1_4" onclick="toggle('l1_4','legal')"><div class="cbox" id="cb_l1_4"></div><div class="ct">
+          <div class="clabel">高度地区・日影規制の確認</div>
+          <textarea class="memo-input no-print" id="m_l1_4" placeholder="高度地区種別・日影規制内容など" onclick="event.stopPropagation()"></textarea>
+          <div class="mv print-only" id="mv_l1_4"></div>
+        </div></div>
+      </div>
+    </div>
+    <div class="sec">
+      <div class="sec-hd legal-hd" onclick="toggleSec('l3')">
+        <div class="sec-icon legal">📌</div>
+        <div class="sec-title">規制・その他行政確認</div>
+        <div class="sec-prog" id="sp_l3"></div>
+        <div class="sec-tog open no-print" id="st_l3">▼</div>
+      </div>
+      <div class="sec-body" id="sb_l3">
+        <div class="ci legal" id="ci_l3_1" onclick="toggle('l3_1','legal')"><div class="cbox" id="cb_l3_1"></div><div class="ct">
+          <div class="clabel">土地区画整理事業区域の確認</div>
+          <div class="field-row"><div class="field-item"><div class="field-label">区域内/外</div>
+            <select class="field-select no-print" id="f_l3_1_ku" onclick="event.stopPropagation()">
+              <option value="">選択</option><option>区域外</option><option>区域内（施行中）</option>
+              <option>区域内（換地処分前）</option><option>区域内（完了済）</option>
+            </select>
+            <div class="fv print-only" id="fv_l3_1_ku"></div>
+          </div></div>
+        </div></div>
+        <div class="ci legal" id="ci_l3_2" onclick="toggle('l3_2','legal')"><div class="cbox" id="cb_l3_2"></div><div class="ct">
+          <div class="clabel">農地転用・農振の確認</div>
+          <textarea class="memo-input no-print" id="m_l3_2" placeholder="農地の場合：転用可否・農振除外の見込みなど" onclick="event.stopPropagation()"></textarea>
+          <div class="mv print-only" id="mv_l3_2"></div>
+        </div></div>
+        <div class="ci legal" id="ci_l3_3" onclick="toggle('l3_3','legal')"><div class="cbox" id="cb_l3_3"></div><div class="ct">
+          <div class="clabel">建築確認済証・検査済証の有無</div>
+          <div class="field-row">
+            <div class="field-item"><div class="field-label">確認済証</div>
+              <select class="field-select no-print" id="f_l3_3_ck" onclick="event.stopPropagation()">
+                <option value="">選択</option><option>あり</option><option>なし</option><option>紛失</option>
+              </select>
+              <div class="fv print-only" id="fv_l3_3_ck"></div>
+            </div>
+            <div class="field-item"><div class="field-label">検査済証</div>
+              <select class="field-select no-print" id="f_l3_3_ins" onclick="event.stopPropagation()">
+                <option value="">選択</option><option>あり</option><option>なし</option><option>紛失</option>
+              </select>
+              <div class="fv print-only" id="fv_l3_3_ins"></div>
+            </div>
+          </div>
+        </div></div>
+        <div class="ci legal" id="ci_l3_4" onclick="toggle('l3_4','legal')"><div class="cbox" id="cb_l3_4"></div><div class="ct">
+          <div class="clabel">造成宅地防災区域・土砂災害警戒区域の確認</div>
+          <div class="field-row"><div class="field-item"><div class="field-label">区域種別</div>
+            <select class="field-select no-print" id="f_l3_4_area" onclick="event.stopPropagation()">
+              <option value="">選択</option><option>指定なし</option>
+              <option>土砂災害警戒区域（イエロー）</option><option>土砂災害特別警戒区域（レッド）</option>
+              <option>造成宅地防災区域</option>
+            </select>
+            <div class="fv print-only" id="fv_l3_4_area"></div>
+          </div></div>
+        </div></div>
+        <div class="ci legal" id="ci_l3_5" onclick="toggle('l3_5','legal')"><div class="cbox" id="cb_l3_5"></div><div class="ct">
+          <div class="clabel">埋蔵文化財包蔵地の確認</div>
+          <div class="field-row"><div class="field-item"><div class="field-label">区域内/外</div>
+            <select class="field-select no-print" id="f_l3_5_b" onclick="event.stopPropagation()">
+              <option value="">選択</option><option>区域外</option><option>区域内</option><option>要確認</option>
+            </select>
+            <div class="fv print-only" id="fv_l3_5_b"></div>
+          </div></div>
+        </div></div>
+      </div>
+    </div>
+  </div><!-- /panel-legal -->
+
+  <!-- ═══ TAB: SELLER ═══ -->
+  <div class="panel" id="panel-seller">
+
+    <!-- 告知事項 -->
+    <div class="sec">
+      <div class="sec-hd seller-hd" onclick="toggleSec('h1')">
+        <div class="sec-icon seller">⚠️</div>
+        <div class="sec-title">建物の状態・告知事項</div>
+        <div class="sec-prog" id="sp_h1"></div>
+        <div class="sec-tog open no-print" id="st_h1">▼</div>
+      </div>
+      <div class="sec-body" id="sb_h1">
+        <div class="ci seller-item" id="ci_h1_1" onclick="toggle('h1_1','seller')"><div class="cbox" id="cb_h1_1"></div><div class="ct">
+          <div class="seller-q">雨漏りはございましたか？ 現在はいかがでしょうか？</div>
+          <div class="seller-sub">過去・現在を含めて確認させていただきます。修理済みの場合もお聞かせください</div>
+          <div class="field-row"><div class="field-item"><div class="field-label">有無</div>
+            <select class="field-select no-print" id="f_h1_1_yn" onclick="event.stopPropagation()">
+              <option value="">選択</option><option>なし</option><option>過去あり・修理済み</option><option>現在あり</option>
+            </select>
+            <div class="fv print-only" id="fv_h1_1_yn"></div>
+          </div></div>
+          <textarea class="memo-input no-print" id="m_h1_1" placeholder="箇所・時期・修理業者など" onclick="event.stopPropagation()"></textarea>
+          <div class="mv print-only" id="mv_h1_1"></div>
+        </div></div>
+
+        <div class="ci seller-item" id="ci_h1_2" onclick="toggle('h1_2','seller')"><div class="cbox" id="cb_h1_2"></div><div class="ct">
+          <div class="seller-q">シロアリの被害や駆除をされたことはございますか？</div>
+          <div class="field-row"><div class="field-item"><div class="field-label">有無</div>
+            <select class="field-select no-print" id="f_h1_2_yn" onclick="event.stopPropagation()">
+              <option value="">選択</option><option>なし</option><option>駆除済み</option><option>被害あり</option>
+            </select>
+            <div class="fv print-only" id="fv_h1_2_yn"></div>
+          </div></div>
+          <textarea class="memo-input no-print" id="m_h1_2" placeholder="時期・業者・保証書の有無など" onclick="event.stopPropagation()"></textarea>
+          <div class="mv print-only" id="mv_h1_2"></div>
+        </div></div>
+
+        <div class="ci seller-item" id="ci_h1_3" onclick="toggle('h1_3','seller')"><div class="cbox" id="cb_h1_3"></div><div class="ct">
+          <div class="seller-q">床・壁・基礎などにひびや傾きなど、気になる点はございますか？</div>
+          <textarea class="memo-input no-print" id="m_h1_3" placeholder="箇所・状況など" onclick="event.stopPropagation()"></textarea>
+          <div class="mv print-only" id="mv_h1_3"></div>
+        </div></div>
+
+        <div class="ci seller-item" id="ci_h1_4" onclick="toggle('h1_4','seller')"><div class="cbox" id="cb_h1_4"></div><div class="ct">
+          <div class="seller-q">給排水・電気・ガスで不具合のある箇所はございますか？</div>
+          <textarea class="memo-input no-print" id="m_h1_4" placeholder="箇所・状況など" onclick="event.stopPropagation()"></textarea>
+          <div class="mv print-only" id="mv_h1_4"></div>
+        </div></div>
+
+        <div class="ci seller-item" id="ci_h1_5" onclick="toggle('h1_5','seller')"><div class="cbox" id="cb_h1_5"></div><div class="ct">
+          <div class="seller-q">過去に浸水・冠水されたことはございますか？</div>
+          <div class="field-row"><div class="field-item"><div class="field-label">有無</div>
+            <select class="field-select no-print" id="f_h1_5_yn" onclick="event.stopPropagation()">
+              <option value="">選択</option><option>なし</option><option>あり</option>
+            </select>
+            <div class="fv print-only" id="fv_h1_5_yn"></div>
+          </div></div>
+          <textarea class="memo-input no-print" id="m_h1_5" placeholder="時期・深さ・箇所など" onclick="event.stopPropagation()"></textarea>
+          <div class="mv print-only" id="mv_h1_5"></div>
+        </div></div>
+
+        <div class="ci seller-item" id="ci_h1_6" onclick="toggle('h1_6','seller')"><div class="cbox" id="cb_h1_6"></div><div class="ct">
+          <div class="seller-q">この物件や近隣で、事件・事故・孤独死などはございましたか？</div>
+          <div class="seller-sub">告知義務に関わる事項ですので、差し支えない範囲でお聞かせいただけますと幸いです</div>
+          <div class="field-row"><div class="field-item"><div class="field-label">有無</div>
+            <select class="field-select no-print" id="f_h1_6_yn" onclick="event.stopPropagation()">
+              <option value="">選択</option><option>なし</option><option>あり</option><option>不明</option>
+            </select>
+            <div class="fv print-only" id="fv_h1_6_yn"></div>
+          </div></div>
+          <textarea class="memo-input no-print" id="m_h1_6" placeholder="内容・時期など" onclick="event.stopPropagation()"></textarea>
+          <div class="mv print-only" id="mv_h1_6"></div>
+        </div></div>
+
+        <div class="ci seller-item" id="ci_h1_7" onclick="toggle('h1_7','seller')"><div class="cbox" id="cb_h1_7"></div><div class="ct">
+          <div class="seller-q">空き巣・不法侵入などの被害を受けられたことはございますか？</div>
+          <div class="field-row"><div class="field-item"><div class="field-label">有無</div>
+            <select class="field-select no-print" id="f_h1_7_yn" onclick="event.stopPropagation()">
+              <option value="">選択</option><option>なし</option><option>あり</option>
+            </select>
+            <div class="fv print-only" id="fv_h1_7_yn"></div>
+          </div></div>
+          <textarea class="memo-input no-print" id="m_h1_7" placeholder="時期・状況など" onclick="event.stopPropagation()"></textarea>
+          <div class="mv print-only" id="mv_h1_7"></div>
+        </div></div>
+      </div>
+    </div>
+
+    <!-- 売却理由・資金 -->
+    <div class="sec">
+      <div class="sec-hd seller-hd" onclick="toggleSec('h2')">
+        <div class="sec-icon seller">💬</div>
+        <div class="sec-title">売却理由・資金計画</div>
+        <div class="sec-prog" id="sp_h2"></div>
+        <div class="sec-tog open no-print" id="st_h2">▼</div>
+      </div>
+      <div class="sec-body" id="sb_h2">
+        <div class="ci seller-item" id="ci_h2_1" onclick="toggle('h2_1','seller')"><div class="cbox" id="cb_h2_1"></div><div class="ct">
+          <div class="seller-q">売却をお考えになったきっかけをお聞かせいただけますか？</div>
+          <div class="seller-sub">住み替え・相続・転勤など、差し支えない範囲で結構です</div>
+          <div class="field-row"><div class="field-item"><div class="field-label">理由</div>
+            <select class="field-select no-print" id="f_h2_1_rsn" onclick="event.stopPropagation()">
+              <option value="">選択</option><option>住み替え</option><option>相続</option><option>転勤・転居</option>
+              <option>資金化・借入返済</option><option>離婚</option><option>その他</option>
+            </select>
+            <div class="fv print-only" id="fv_h2_1_rsn"></div>
+          </div></div>
+          <textarea class="memo-input no-print" id="m_h2_1" placeholder="詳細メモ" onclick="event.stopPropagation()"></textarea>
+          <div class="mv print-only" id="mv_h2_1"></div>
+        </div></div>
+
+        <div class="ci seller-item" id="ci_h2_2" onclick="toggle('h2_2','seller')"><div class="cbox" id="cb_h2_2"></div><div class="ct">
+          <div class="seller-q">売却のご希望時期はございますか？</div>
+          <div class="seller-sub">引き渡し・契約・売り出しなど、目安があればお聞かせください</div>
+          <div class="field-row">
+            <div class="field-item"><div class="field-label">希望時期</div>
+              <input class="field-input no-print" id="f_h2_2_time" type="text" placeholder="例：○年○月頃" onclick="event.stopPropagation()">
+              <div class="fv print-only" id="fv_h2_2_time"></div>
+            </div>
+            <div class="field-item"><div class="field-label">急ぎ度</div>
+              <select class="field-select no-print" id="f_h2_2_urg" onclick="event.stopPropagation()">
+                <option value="">選択</option><option>急いでいない</option><option>半年以内</option><option>3ヶ月以内</option><option>できるだけ早く</option>
+              </select>
+              <div class="fv print-only" id="fv_h2_2_urg"></div>
+            </div>
+          </div>
+        </div></div>
+
+        <div class="ci seller-item" id="ci_h2_3" onclick="toggle('h2_3','seller')"><div class="cbox" id="cb_h2_3"></div><div class="ct">
+          <div class="seller-q">ご希望の売却価格のイメージはございますか？</div>
+          <div class="seller-sub">おおよその目安で構いません</div>
+          <div class="field-row"><div class="field-item"><div class="field-label">希望価格</div>
+            <input class="field-input no-print" id="f_h2_3_price" type="text" placeholder="例：3,500万円以上" onclick="event.stopPropagation()">
+            <div class="fv print-only" id="fv_h2_3_price"></div>
+          </div></div>
+          <textarea class="memo-input no-print" id="m_h2_3" placeholder="価格の根拠・交渉余地など" onclick="event.stopPropagation()"></textarea>
+          <div class="mv print-only" id="mv_h2_3"></div>
+        </div></div>
+
+        <div class="ci seller-item" id="ci_h2_4" onclick="toggle('h2_4','seller')"><div class="cbox" id="cb_h2_4"></div><div class="ct">
+          <div class="seller-q">住宅ローンはご残債がございますか？</div>
+          <div class="field-row">
+            <div class="field-item"><div class="field-label">残債</div>
+              <select class="field-select no-print" id="f_h2_4_loan" onclick="event.stopPropagation()">
+                <option value="">選択</option><option>なし</option><option>あり</option>
+              </select>
+              <div class="fv print-only" id="fv_h2_4_loan"></div>
+            </div>
+            <div class="field-item"><div class="field-label">残高概算</div>
+              <input class="field-input no-print" id="f_h2_4_amt" type="text" placeholder="例：1,800万円" onclick="event.stopPropagation()">
+              <div class="fv print-only" id="fv_h2_4_amt"></div>
+            </div>
+            <div class="field-item"><div class="field-label">金融機関</div>
+              <input class="field-input no-print" id="f_h2_4_bank" type="text" placeholder="例：○○銀行" onclick="event.stopPropagation()">
+              <div class="fv print-only" id="fv_h2_4_bank"></div>
+            </div>
+          </div>
+        </div></div>
+
+        <div class="ci seller-item" id="ci_h2_5" onclick="toggle('h2_5','seller')"><div class="cbox" id="cb_h2_5"></div><div class="ct">
+          <div class="seller-q">売却後のお住まいのご予定はお決まりでしょうか？</div>
+          <div class="seller-sub">引き渡し時期の調整のためお伺いしています</div>
+          <div class="field-row"><div class="field-item"><div class="field-label">予定</div>
+            <select class="field-select no-print" id="f_h2_5_plan" onclick="event.stopPropagation()">
+              <option value="">選択</option><option>購入物件あり</option><option>賃貸予定</option><option>実家へ</option><option>未定</option>
+            </select>
+            <div class="fv print-only" id="fv_h2_5_plan"></div>
+          </div></div>
+          <textarea class="memo-input no-print" id="m_h2_5" placeholder="詳細・引き渡し時期の希望など" onclick="event.stopPropagation()"></textarea>
+          <div class="mv print-only" id="mv_h2_5"></div>
+        </div></div>
+      </div>
+    </div>
+
+    <!-- リフォーム・設備 -->
+    <div class="sec">
+      <div class="sec-hd seller-hd" onclick="toggleSec('h3')">
+        <div class="sec-icon seller">🔨</div>
+        <div class="sec-title">リフォーム・設備・付帯情報</div>
+        <div class="sec-prog" id="sp_h3"></div>
+        <div class="sec-tog open no-print" id="st_h3">▼</div>
+      </div>
+      <div class="sec-body" id="sb_h3">
+        <div class="ci seller-item" id="ci_h3_1" onclick="toggle('h3_1','seller')"><div class="cbox" id="cb_h3_1"></div><div class="ct">
+          <div class="seller-q">リフォームや増改築をされたことはございますか？</div>
+          <div class="seller-sub">小さな工事でも構いません。確認申請の有無もお聞かせいただけますと助かります</div>
+          <div class="field-row"><div class="field-item"><div class="field-label">有無</div>
+            <select class="field-select no-print" id="f_h3_1_yn" onclick="event.stopPropagation()">
+              <option value="">選択</option><option>なし</option><option>あり</option>
+            </select>
+            <div class="fv print-only" id="fv_h3_1_yn"></div>
+          </div></div>
+          <textarea class="memo-input no-print" id="m_h3_1" placeholder="内容・時期・業者・確認申請の有無など" onclick="event.stopPropagation()"></textarea>
+          <div class="mv print-only" id="mv_h3_1"></div>
+        </div></div>
+
+        <div class="ci seller-item" id="ci_h3_2" onclick="toggle('h3_2','seller')"><div class="cbox" id="cb_h3_2"></div><div class="ct">
+          <div class="seller-q">設備の中で、故障や不具合のあるものはございますか？</div>
+          <textarea class="memo-input no-print" id="m_h3_2" placeholder="エアコン・給湯器・浴室設備など" onclick="event.stopPropagation()"></textarea>
+          <div class="mv print-only" id="mv_h3_2"></div>
+        </div></div>
+
+        <div class="ci seller-item" id="ci_h3_3" onclick="toggle('h3_3','seller')"><div class="cbox" id="cb_h3_3"></div><div class="ct">
+          <div class="seller-q">エアコンや照明など、残していただける設備・家具はございますか？</div>
+          <textarea class="memo-input no-print" id="m_h3_3" placeholder="残置物・撤去予定の設備など" onclick="event.stopPropagation()"></textarea>
+          <div class="mv print-only" id="mv_h3_3"></div>
+        </div></div>
+
+        <div class="ci seller-item" id="ci_h3_4" onclick="toggle('h3_4','seller')"><div class="cbox" id="cb_h3_4"></div><div class="ct">
+          <div class="seller-q">近隣との関係で何かお気になりの点はございますか？</div>
+          <div class="seller-sub">騒音・境界・ペットなど、お気づきの点があればお聞かせください</div>
+          <textarea class="memo-input no-print" id="m_h3_4" placeholder="内容・状況など" onclick="event.stopPropagation()"></textarea>
+          <div class="mv print-only" id="mv_h3_4"></div>
+        </div></div>
+      </div>
+    </div>
+
+  </div><!-- /panel-seller -->
+
+  <!-- Action bar -->
+  <div class="action-bar no-print">
+    <button class="btn btn-reset" onclick="resetAll()">🔄 リセット</button>
+    <button class="btn btn-sales" onclick="doPrint('sales')">🖨️ 営業用印刷</button>
+    <button class="btn btn-legal" onclick="doPrint('legal')">🖨️ サポート用印刷</button>
+    <button class="btn btn-seller" onclick="doPrint('seller')">🖨️ ヒアリング印刷</button>
+  </div>
+
+</div><!-- /card -->
+<div class="print-footer print-only" id="printFooter">
+  <span id="pf-date"></span>
+  <span id="pf-title"></span>
+  <span id="pf-prog"></span>
+</div>
+</div><!-- /wrap -->
+
+<!-- Save/Load Modal -->
+<div class="modal-overlay no-print" id="modal">
+  <div class="modal">
+    <h3>💾 保存済み物件を呼び出す</h3>
+    <div class="modal-list" id="modal-list"></div>
+    <div class="modal-btns">
+      <button class="modal-btn modal-btn-cancel" onclick="closeModal()">閉じる</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── State ───
+const checked = {};
+let ownerCount = 0;
+const STORAGE_KEY = 'propChecklist_v3';
+
+// ─── Section configs ───
+const SALES_SECS = [
+  { id:'s1', items:['s1_3','s1_5','s1_6'] },
+  { id:'s2', items:['s2_1','s2_2','s2_3','s2_4','s2_6','s2_5'] },
+  { id:'s3', items:['s3_1','s3_2','s3_3','s3_5','s3_6'] },
+  { id:'s4', items:['s4_1','s4_2'] },
+  { id:'s6', items:['s6_1','s6_2','s6_3'] },
+  { id:'s7', items:['s7_1','s7_2','s7_3'], mansionOnly:true },
+  { id:'s5', items:['s5_1','s5_2','s5_5','s5_3','s5_6','s5_4'] },
+];
+const LEGAL_SECS = [
+  { id:'l1', items:['l1_1','l1_2','l1_3','l1_4'] },
+  { id:'l3', items:['l3_1','l3_2','l3_3','l3_4','l3_5'] },
+];
+const SELLER_SECS = [
+  { id:'h1', items:['h1_1','h1_2','h1_3','h1_4','h1_5','h1_6','h1_7'] },
+  { id:'h2', items:['h2_1','h2_2','h2_3','h2_4','h2_5'] },
+  { id:'h3', items:['h3_1','h3_2','h3_3','h3_4'] },
+];
+
+let currentTab = 'sales';
+
+// ─── Init ───
+function init() {
+  const today = new Date();
+  document.getElementById('dateDisp').textContent =
+    today.toLocaleDateString('ja-JP',{year:'numeric',month:'long',day:'numeric',weekday:'short'});
+  document.getElementById('p_date').value = today.toISOString().split('T')[0];
+
+  const propIds = ['p_addr','p_date','p_staff','p_seller','p_type','p_price'];
+  propIds.forEach(id => {
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.addEventListener('input', () => { syncPrint(id); if(id==='p_type') updateMansionVisibility(); });
+    el.addEventListener('change', () => { syncPrint(id); if(id==='p_type') updateMansionVisibility(); });
+    syncPrint(id);
+  });
+
+  document.querySelectorAll('.field-input,.field-select').forEach(el => {
+    el.addEventListener('change', () => syncFieldPrint(el));
+    el.addEventListener('input', () => syncFieldPrint(el));
+  });
+  document.querySelectorAll('.memo-input').forEach(el => {
+    el.addEventListener('input', () => {
+      const pv = document.getElementById('mv_' + el.id.slice(2));
+      if(pv) pv.textContent = el.value;
+    });
+  });
+
+  addOwner();
+  updateMansionVisibility();
+  updateAllProgress();
+}
+
+// ─── Print sync ───
+function syncPrint(id) {
+  const el = document.getElementById(id);
+  const pv = document.getElementById(id + '_v');
+  if(el && pv) pv.textContent = el.value || '';
+}
+function syncFieldPrint(el) {
+  const pv = document.getElementById('fv_' + el.id.slice(2));
+  if(pv) pv.textContent = el.value || '';
+}
+function syncAll() {
+  ['p_addr','p_date','p_staff','p_seller','p_type','p_price'].forEach(syncPrint);
+  document.querySelectorAll('.field-input,.field-select').forEach(syncFieldPrint);
+  document.querySelectorAll('.memo-input').forEach(el => {
+    const pv = document.getElementById('mv_' + el.id.slice(2));
+    if(pv) pv.textContent = el.value;
+  });
+}
+
+// ─── Tab switch ───
+function switchTab(tab) {
+  currentTab = tab;
+  ['sales','legal','seller'].forEach(t => {
+    document.getElementById('panel-' + t).classList.toggle('active', t === tab);
+    document.getElementById('tab-' + t).className = 'tab' + (t === tab ? ' active-' + t : '');
+  });
+  const fill = document.getElementById('prog-fill');
+  fill.className = 'prog-fill ' + tab;
+  document.getElementById('prog-label').textContent =
+    tab === 'sales' ? '営業調査の進捗' : tab === 'legal' ? '法令・行政調査の進捗' : '売主様ヒアリングの進捗';
+  const pnum = document.querySelector('.prog-num');
+  pnum.className = 'prog-num' + (tab !== 'sales' ? ' ' + tab : '');
+  updateAllProgress();
+}
+
+// ─── Mansion visibility ───
+function updateMansionVisibility() {
+  const isMansion = document.getElementById('p_type').value === 'マンション';
+  const sec = document.getElementById('sec_mansion');
+  if(sec) sec.style.display = isMansion ? '' : 'none';
+  updateAllProgress();
+}
+
+// ─── Conditional show ───
+function toggleShow(id, show) {
+  const el = document.getElementById(id);
+  if(el) el.style.display = show ? '' : 'none';
+}
+
+// ─── Toggle check ───
+function toggle(id) {
+  checked[id] = !checked[id];
+  const ci = document.getElementById('ci_' + id);
+  const cb = document.getElementById('cb_' + id);
+  if(!ci || !cb) return;
+  ci.classList.toggle('checked', !!checked[id]);
+  cb.innerHTML = checked[id] ? '✓' : '';
+  updateAllProgress();
+}
+
+// ─── Toggle section ───
+function toggleSec(id) {
+  const body = document.getElementById('sb_' + id);
+  const tog  = document.getElementById('st_' + id);
+  if(!body) return;
+  const c = body.classList.toggle('collapsed');
+  if(tog) tog.classList.toggle('open', !c);
+}
+
+// ─── Progress ───
+function updateAllProgress() {
+  const isMansion = document.getElementById('p_type').value === 'マンション';
+  const secMap = { sales: SALES_SECS, legal: LEGAL_SECS, seller: SELLER_SECS };
+  const secs = secMap[currentTab];
+  let total = 0, done = 0;
+  secs.forEach(sec => {
+    if(sec.mansionOnly && !isMansion) return;
+    const d = sec.items.filter(id => checked[id]).length;
+    const t = sec.items.length;
+    const el = document.getElementById('sp_' + sec.id);
+    if(el) el.textContent = d + ' / ' + t;
+    total += t; done += d;
+  });
+  document.getElementById('prog-count').textContent = done;
+  document.getElementById('prog-total').textContent = total;
+  document.getElementById('prog-fill').style.width = total > 0 ? (done/total*100) + '%' : '0%';
+}
+
+// ─── Shared owners ───
+function addOwner() {
+  ownerCount++;
+  const n = ownerCount;
+  const row = document.createElement('div');
+  row.className = 'shared-row';
+  row.id = 'owner_row_' + n;
+  row.innerHTML = `
+    <div class="shared-idx">${n}</div>
+    <input class="field-input no-print" id="own_name_${n}" type="text" placeholder="氏名" style="flex:2;" onclick="event.stopPropagation()">
+    <div class="fv print-only" id="own_name_v_${n}" style="flex:2;"></div>
+    <input class="field-input no-print" id="own_share_${n}" type="text" placeholder="持分 例：1/2" style="flex:1;" onclick="event.stopPropagation()">
+    <div class="fv print-only" id="own_share_v_${n}" style="flex:1;"></div>`;
+  document.getElementById('owners-list').appendChild(row);
+  row.querySelector('#own_name_'+n).addEventListener('input', e =>
+    { document.getElementById('own_name_v_'+n).textContent = e.target.value; });
+  row.querySelector('#own_share_'+n).addEventListener('input', e =>
+    { document.getElementById('own_share_v_'+n).textContent = e.target.value; });
+}
+
+// ─── Save / Load ───
+function getSnapshot() {
+  const fields = {};
+  document.querySelectorAll('.field-input,.field-select,.pi,.memo-input').forEach(el => {
+    if(el.id) fields[el.id] = el.value;
+  });
+  return { checked: {...checked}, fields, ownerCount,
+           savedAt: new Date().toLocaleString('ja-JP') };
+}
+
+function applySnapshot(snap) {
+  Object.keys(checked).forEach(k => { checked[k] = false; });
+  Object.assign(checked, snap.checked || {});
+  const fields = snap.fields || {};
+  Object.keys(fields).forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.value = fields[id];
+  });
+  // Re-render owners
+  const list = document.getElementById('owners-list');
+  list.innerHTML = '';
+  ownerCount = 0;
+  const maxOwner = snap.ownerCount || 1;
+  for(let i = 0; i < maxOwner; i++) addOwner();
+  // Restore owner values
+  for(let i = 1; i <= maxOwner; i++) {
+    const n = document.getElementById('own_name_'+i);
+    const s = document.getElementById('own_share_'+i);
+    if(n && fields['own_name_'+i]) n.value = fields['own_name_'+i];
+    if(s && fields['own_share_'+i]) s.value = fields['own_share_'+i];
+  }
+  // Re-render checked states
+  document.querySelectorAll('.ci').forEach(el => {
+    const id = el.id.replace('ci_','');
+    el.classList.toggle('checked', !!checked[id]);
+    const cb = document.getElementById('cb_'+id);
+    if(cb) cb.innerHTML = checked[id] ? '✓' : '';
+  });
+  syncAll();
+  updateMansionVisibility();
+  updateAllProgress();
+}
+
+function saveData() {
+  const name = document.getElementById('saveName').value.trim();
+  if(!name) { alert('保存名を入力してください'); return; }
+  const all = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+  all[name] = getSnapshot();
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
+  showToast('「' + name + '」を保存しました');
+}
+
+function openModal() {
+  const all = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+  const list = document.getElementById('modal-list');
+  const keys = Object.keys(all);
+  if(keys.length === 0) {
+    list.innerHTML = '<div class="modal-empty">保存された物件はありません</div>';
+  } else {
+    list.innerHTML = keys.map(k => `
+      <div class="modal-item">
+        <div class="modal-item-name">📁 ${k}</div>
+        <div class="modal-item-date">${all[k].savedAt||''}</div>
+        <button class="modal-item-del" onclick="deleteSave('${k.replace(/'/g,"\\'")}',event)" title="削除">✕</button>
+        <button class="sb sb-save" style="font-size:11px;padding:4px 10px;" onclick="loadData('${k.replace(/'/g,"\\'")}')">読み込む</button>
+      </div>`).join('');
+  }
+  document.getElementById('modal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+}
+
+function loadData(name) {
+  const all = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+  if(!all[name]) return;
+  applySnapshot(all[name]);
+  document.getElementById('saveName').value = name;
+  closeModal();
+  showToast('「' + name + '」を読み込みました');
+}
+
+function deleteSave(name, e) {
+  e.stopPropagation();
+  if(!confirm('「' + name + '」を削除しますか？')) return;
+  const all = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+  delete all[name];
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
+  openModal();
+}
+
+function newSheet() {
+  if(!confirm('現在の内容をクリアして新規作成しますか？')) return;
+  resetAll(true);
+  document.getElementById('saveName').value = '';
+}
+
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.textContent = msg;
+  Object.assign(t.style, {
+    position:'fixed',bottom:'24px',left:'50%',transform:'translateX(-50%)',
+    background:var_accent(),color:'#fff',padding:'10px 20px',borderRadius:'8px',
+    fontSize:'13px',fontWeight:'700',zIndex:'999',boxShadow:'0 4px 16px rgba(0,0,0,.2)',
+    transition:'opacity .3s'
+  });
+  document.body.appendChild(t);
+  setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 2000);
+}
+function var_accent(){ return '#c17f3a'; }
+
+// ─── Reset ───
+function resetAll(silent) {
+  if(!silent && !confirm('全てのチェックとメモをリセットしますか？')) return;
+  Object.keys(checked).forEach(k => { checked[k] = false; });
+  document.querySelectorAll('.ci').forEach(el => el.classList.remove('checked'));
+  document.querySelectorAll('.cbox').forEach(el => { el.innerHTML = ''; });
+  document.querySelectorAll('.memo-input').forEach(el => { el.value = ''; });
+  document.querySelectorAll('.mv').forEach(el => { el.textContent = ''; });
+  document.querySelectorAll('.field-input,.field-select').forEach(el => { el.value = ''; });
+  document.querySelectorAll('.fv').forEach(el => { el.textContent = ''; });
+  document.querySelectorAll('.pi').forEach(el => { if(el.tagName==='SELECT') el.value=''; else el.value=''; });
+  document.querySelectorAll('.pv').forEach(el => { el.textContent = ''; });
+  document.getElementById('owners-list').innerHTML = '';
+  ownerCount = 0; addOwner();
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('p_date').value = today;
+  syncPrint('p_date');
+  updateMansionVisibility();
+  updateAllProgress();
+}
+
+// ─── Print ───
+function doPrint(target) {
+  syncAll();
+  document.querySelectorAll('.sec-body').forEach(b => b.classList.remove('collapsed'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('print-active'));
+  document.getElementById('panel-' + target).classList.add('print-active');
+
+  const secMap = { sales: SALES_SECS, legal: LEGAL_SECS, seller: SELLER_SECS };
+  const secs = secMap[target];
+  const isMansion = document.getElementById('p_type').value === 'マンション';
+  const allItems = secs.flatMap(s => s.mansionOnly && !isMansion ? [] : s.items);
+  const done = allItems.filter(id => checked[id]).length;
+  const labels = { sales:'【営業調査シート】', legal:'【法令・行政調査シート】', seller:'【売主様ヒアリングシート】' };
+  document.getElementById('pf-date').textContent  = '出力：' + new Date().toLocaleString('ja-JP');
+  document.getElementById('pf-title').textContent = labels[target];
+  document.getElementById('pf-prog').textContent  = '完了 ' + done + ' / ' + allItems.length + ' 項目';
+  document.getElementById('printFooter').style.display = 'flex';
+  window.print();
+}
+
+// ─── Modal close on overlay click ───
+document.getElementById('modal').addEventListener('click', function(e) {
+  if(e.target === this) closeModal();
+});
+
+init();
+</script>
+</body>
+</html>
